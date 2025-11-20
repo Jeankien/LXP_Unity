@@ -9,28 +9,34 @@ public class IAennemies : MonoBehaviour
 
     private Vector3 randomTarget;
     private float wanderTimer;
+    private Rigidbody rb;
 
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
         ChooseRandomTarget();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        Vector3 dir;
 
         if (distanceToPlayer < chaseRange)
         {
-            Vector3 dir = (player.position - transform.position);
+            dir = (player.position - transform.position);
             dir.y = 0;
             dir = dir.normalized;
-
-            transform.position += dir * speed * Time.deltaTime;
         }
         else
         {
             Wander();
+            dir = (randomTarget - transform.position);
+            dir.y = 0;
+            dir = dir.normalized;
         }
+
+        rb.MovePosition(transform.position + dir * speed * Time.fixedDeltaTime);
     }
 
     void Wander()
@@ -42,19 +48,11 @@ public class IAennemies : MonoBehaviour
             ChooseRandomTarget();
             wanderTimer = 0f;
         }
-
-        Vector3 dir = (randomTarget - transform.position);
-        dir.y = 0;
-        dir = dir.normalized;
-
-        transform.position += dir * speed * Time.deltaTime;
     }
 
     void ChooseRandomTarget()
     {
         Camera cam = Camera.main;
-
-        
         float camDistance = Mathf.Abs(cam.transform.position.y - transform.position.y);
 
         Vector3 min = cam.ViewportToWorldPoint(new Vector3(0, 0, camDistance));
@@ -67,4 +65,3 @@ public class IAennemies : MonoBehaviour
         );
     }
 }
-

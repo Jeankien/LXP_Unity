@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class Crosshair : MonoBehaviour
 {
+    public float height = 1f;
+
     void Start()
     {
         Cursor.visible = false;
@@ -14,10 +16,13 @@ public class Crosshair : MonoBehaviour
             return;
 
         Vector3 mouseScreen = Mouse.current.position.ReadValue();
-        mouseScreen = new Vector3(mouseScreen.x, mouseScreen.y, Camera.main.transform.position.y);
 
+        float distanceToCamera = Camera.main.transform.position.y - height;
+
+        mouseScreen.z = distanceToCamera;
         Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
-        
+
+        mouseWorld.y = height;
 
         transform.position = mouseWorld;
     }
